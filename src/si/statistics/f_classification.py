@@ -3,19 +3,15 @@
 from si.data.dataset import Dataset
 import scipy
 
-    def f_classification(dataset:Dataset) -> tuple:
 
-        classes = dataset.get_classes()
+def f_classification(dataset: Dataset) -> tuple:
+    
+    classes = dataset.get_classes()
 
-        groups = []
+    groups = []
+    for class_ in classes:
+        mask = dataset.y == class_
+        group = dataset.X[ mask , :]
+        groups.append(group)
 
-        for class_ in classes:
-            mask = dataset.y == class_
-
-            group = dataset.X[ , :]
-            groups.append(group)
-
-        return scipy.stats.f_oneway(*groups)
-
-
-
+    return scipy.stats.f_oneway(*groups)

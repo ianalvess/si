@@ -1,10 +1,15 @@
-from datasets import DATASETS_PATH
-from si.io.csv_file import read_csv,write_csv
+import os
+from unittest import TestCase
 
-class TestVarianceThershold(TestCase):
+from datasets import DATASETS_PATH
+
+from si.io.csv_file import read_csv
+from si.feature_selection.variance_threshold import VarianceThreshold
+class TestVarianceThreshold(TestCase):
 
     def setUp(self):
-        self.csv_file = os.path.join(DATASETS_PATH,"iris","iris.csv")
+        self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
+
         self.dataset = read_csv(filename=self.csv_file, features=True, label=True)
 
     def test_fit(self):
