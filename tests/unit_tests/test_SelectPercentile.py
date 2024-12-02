@@ -1,42 +1,58 @@
+from typing import Callable
+
+
+import os
+from unittest import TestCase
+import numpy as np
+from si.io.csv_file import read_csv
+from si.data.dataset import Dataset
+from si.statistics.f_classification import f_classification
+from si.feature_selection.select_percentily import SelectPercentile
+from datasets import DATASETS_PATH
+
 
 class TestSelectPercentile(TestCase):
-    def test_init(self):
-        selector = SelectPercentile()
-        self.assertEqual(selector.score_func, f_classif)
-        self.assertEqual(selector.percentile, 10)
+    def setUp(self):
+
+        self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
+        self.dataset = read_csv(filename=self.csv_file, features=True, label=True)
 
     def test_fit(self):
-        X = np.random.rand(100, 10)
-        y = np.random.randint(0, 2, 100)
+
         selector = SelectPercentile()
-        selector._fit(X, y)
+        selector._fit(self.dataset)
+
+        # Verifica se as pontuações F e os valores p não são None
         self.assertIsNotNone(selector.F)
         self.assertIsNotNone(selector.p)
+        # Verifica se as dimensões estão corretas
+        self.assertEqual(selector.F.shape[0], self.dataset.X.shape[1])
+        self.assertEqual(selector.p.shape[0], self.dataset.X.shape[1])
 
     def test_transform(self):
-        X = np.random.rand(100, 10)
-        selector = SelectPercentile()
-        selector.F = np.random.rand(10)
-        X_selected = selector._transform(X)
-        self.assertEqual(X_selected.shape[1], 1)
 
-    def test_fit_transform(self):
-        X = np.random.rand(100, 10)
-        y = np.random.randint(0, 2, 100)
-        selector = SelectPercentile()
-        X_selected = selector.fit_transform(X, y)
-        self.assertIsNotNone(X_selected)
+        selector = SelectPercentile(percentile=50)  # Seleciona 50% das características
+        selector._fit(self.dataset)
+        transformed_dataset = selector._transform(self.dataset)
 
-    def test_percentile(self):
-        X = np.random.rand(100, 10)
-        y = np.random.randint(0, 2, 100)
-        selector = SelectPercentile(percentile=50)
-        X_selected = selector.fit_transform(X, y)
-        self.assertEqual(X_selected.shape[1], 5)
+        # Verifica se o número de características selecionadas está correto
+        num_features = len(self.dataset.features)
+        expected_num_selected_features = int(np.ceil(0.50 * num_features))
+        self.assertEqual(transformed_dataset.X.shape[1], expected_num_selected_features)
+
+        # Verifica se as características selecionadas são as corretas
+        selected_feature_names = set(transformed_dataset.features)
+        original_feature_names = set(self.dataset.features)
+
+        # As características selecionadas devem estar entre as características originais
+        self.assertTrue(selected_feature_names.issubset(original_feature_names))
 
     def test_invalid_percentile(self):
-        X = np.random.rand(100, 10)
-        y = np.random.randint(0, 2, 100)
-        selector = SelectPercentile(percentile=150)
+
         with self.assertRaises(ValueError):
-            selector.fit_transform(X, y)
+            selector = SelectPercentile(percentile=150)
+            selector._fit(self.dataset)
+
+        with self.assertRaises(ValueError):
+            selector = SelectPercentile(percentile=-10)
+            selector._fit(self.dataset)

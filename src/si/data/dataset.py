@@ -198,6 +198,78 @@ class Dataset:
         y = np.random.randint(0, n_classes, n_samples)
         return cls(X, y, features=features, label=label)
 
+    def dropna(self):
+
+        """
+        Identifies all rows in the matrix X that contain at least one NaN value and drops them.
+
+        Parameters
+        ----------
+        The method does not take any arguments.
+
+        Returns
+        -------
+        The Dataset object itself, with updated data.
+
+        """
+
+        rows_na = np.isnan(self.X).any(axis=1)
+        self.X = self.X[~rows_na]
+        self.y = self.y[~rows_na]
+
+        return self
+
+    def fillna(self, value):
+
+        """
+        Replaces all null (NaN) values in the dataset with a specific value,
+        or the mean/median of the corresponding feature (column).
+
+        Parameters:
+        -----------
+        value : float or str(mean,median)
+
+        Returns:
+        --------
+        The modified Dataset object.
+        """
+
+        if isinstance(value, (int, float)):
+            self.X = np.nan_to_num(self.X, nan = value)
+
+        elif value == "mean":
+            mean_values = np.nanmean(self.X, axis=0)
+
+            self.X = np.where(np.isnan(self.X), mean_values, self.X)
+
+        elif value == "median":
+            median_values = np.nanmedian(self.X, axis=0)
+
+            self.X =np.where(np.isnan(self.X), median_values, self.X)
+
+        else:
+            raise ValueError("Value must be a float, 'mean' or 'median'")
+
+        return self
+
+    def remove_by_index(self,index):
+        """
+        Removes rows whose index is equal to index.
+
+        Parameters:
+        -----------
+        index : int
+
+        Returns:
+        --------
+        The modified Dataset object.
+        """
+
+        self.X =np.delete(self.X, index, axis=0)
+        self.y =np.delete(self.y, index)
+
+        return self
+
 
 if __name__ == '__main__':
     X = np.array([[1, 2, 3], [4, 5, 6]])
