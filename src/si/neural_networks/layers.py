@@ -95,3 +95,39 @@ class DenseLayer(Layer):
         self.input = input
         self.output = np.dot(self.input, self.weights) + self.biases
         return self.output
+
+class Dropout(Layer):
+    def __init__(self, probability):
+        self.probability = probability
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+
+        if training:
+            self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)
+
+            output = input * self.mask
+
+            return output
+        else:
+            return input
+
+    def backward_propagation(self, output_error):
+
+        output_error = output_error * self.mask
+
+        return output_error
+
+    def output_shape(self):
+
+        return self.input.shape
+
+    def parameters(self):
+
+        return 0
+
+
+
+
