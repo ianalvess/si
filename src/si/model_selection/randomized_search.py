@@ -5,31 +5,34 @@ from si.model_selection.cross_validate import k_fold_cross_validation
 
 def random_search_cv(model, dataset: Dataset, param_grid: Dict[str, List], scoring: Callable = None, cv: int = 3, n_iter: int = 10) -> Dict[str, Union[float, Dict]]:
     """
-    Busca aleatória de hiperparâmetros com validação cruzada.
+  Randomized hyperparameter search with cross-validation.
 
-    Parâmetros:
+    Parameters:
     ----------
     model : object
-        Modelo a ser ajustado.
+        The model to be fitted.
     dataset : Dataset
-        Conjunto de dados para validação.
+        The dataset for validation.
     param_grid : dict
-        Dicionário com os nomes dos hiperparâmetros e seus valores possíveis.
-    scoring : callable, opcional
-        Função para calcular a pontuação do modelo.
+        Dictionary with the names of the hyperparameters and their possible values.
+    scoring : callable, optional
+        Function to compute the score of the model.
     cv : int
-        Número de divisões (folds) na validação cruzada.
+        Number of folds for cross-validation.
     n_iter : int
-        Número de combinações aleatórias de hiperparâmetros a testar.
+        Number of random combinations of hyperparameters to test.
 
-    Retorna:
+    Returns:
     --------
     Dict[str, Union[float, Dict]]:
-        Dicionário com os melhores hiperparâmetros e a melhor pontuação.
+        A dictionary with the best hyperparameters, scores, and details.
     """
+
     results = {
-        "best_score": -np.inf,
-        "best_params": None
+        "hyperparameters": [],
+        "scores": [],
+        "best_hyperparameters": None,
+        "best_score": -np.inf
     }
 
     for _ in range(n_iter):
@@ -39,12 +42,14 @@ def random_search_cv(model, dataset: Dataset, param_grid: Dict[str, List], scori
             setattr(model, param, value)
 
         scores = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
-
         mean_score = np.mean(scores)
+
+        results["hyperparameters"].append(params)
+        results["scores"].append(mean_score)
 
         if mean_score > results["best_score"]:
             results["best_score"] = mean_score
-            results["best_params"] = params
+            results["best_hyperparameters"] = params
 
     return results
 
