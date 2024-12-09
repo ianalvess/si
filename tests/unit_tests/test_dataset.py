@@ -96,3 +96,4 @@ class TestDataset(unittest.TestCase):
 
         expected_y = np.array([1, 3])
         np.testing.assert_array_equal(dataset.y, expected_y)
+

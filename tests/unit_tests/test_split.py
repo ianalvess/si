@@ -46,3 +46,4 @@ class TestSplits(TestCase):
                                        err_msg="Distribuição de classes no conjunto de teste não está correta")
         np.testing.assert_almost_equal(train_distribution, original_distribution, decimal=1,
                                        err_msg="Distribuição de classes no conjunto de treino não está correta")
+

@@ -36,4 +36,4 @@ class TestDropoutLayer(TestCase):
         active_rate = np.mean(mask)
         expected_active_rate = 1 - self.probability
         self.assertAlmostEqual(active_rate, expected_active_rate, delta=0.1,
-                               msg="A taxa de ativação da máscara não corresponde à esperada.")
+                               msg="A taxa de ativação da máscara não corresponde à esperada")

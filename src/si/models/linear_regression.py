@@ -72,6 +72,7 @@ class RidgeRegression(Model):
             i += 1
 
         return self
+
     
 
 

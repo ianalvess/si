@@ -125,7 +125,6 @@ class Dropout(Layer):
         return self.input.shape
 
     def parameters(self):
-
         return 0
 
 

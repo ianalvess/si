@@ -43,3 +43,4 @@ class TestRandomSearchCV(TestCase):
 
         best_score = results["best_score"]
         self.assertGreaterEqual(best_score, 0.5)
+

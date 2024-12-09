@@ -39,3 +39,4 @@ class TestKNNRegressor(TestCase):
         expected_error_max = 85.0
         self.assertGreaterEqual(error, expected_error_min, msg=f"O erro RMSE está muito baixo: {error}")
         self.assertLessEqual(error, expected_error_max, msg=f"O erro RMSE está muito alto: {error}")
+

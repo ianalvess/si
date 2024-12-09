@@ -84,3 +84,4 @@ class SelectPercentile(Transformer):
         idxs = np.argsort(self.F)[-k:]  # Obtém os índices das k melhores características
         features = np.array(dataset.features)[idxs]  # Nomes das características selecionadas
         return Dataset(X=dataset.X[:, idxs], y=dataset.y, features=list(features), label=dataset.label)
+

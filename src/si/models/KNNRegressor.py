@@ -32,3 +32,4 @@ class KNNRegressor:
         """Calcula o erro entre os valores estimados e os reais (RMSE)."""
 
         return rmse(dataset.y, self._predict(dataset))
+

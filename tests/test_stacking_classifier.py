@@ -52,3 +52,4 @@ class TestStackingClassifier(TestCase):
         score = self.stacking_model._score(X_test, y_test)
         self.assertGreaterEqual(score, 0.0)  # A acurácia deve ser >= 0
         self.assertLessEqual(score, 1.0)     # A acurácia deve ser <= 1
+

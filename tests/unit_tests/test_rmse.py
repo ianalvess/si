@@ -16,3 +16,4 @@ class TestRMSE(unittest.TestCase):
         with self.assertRaises(ValueError):
             rmse(y_true, y_pred)
 
+
