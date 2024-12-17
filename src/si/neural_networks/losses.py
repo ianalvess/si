@@ -131,3 +131,57 @@ class BinaryCrossEntropy(LossFunction):
         # Avoid division by zero
         p = np.clip(y_pred, 1e-15, 1 - 1e-15)
         return - (y_true / p) + (1 - y_true) / (1 - p)
+
+    class CategoricalCrossEntropy(LossFunction):
+        """
+           Cross entropy loss function for multi-class classification problems.
+           """
+
+        def loss(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+            """
+            Compute the categorical cross-entropy loss function.
+
+            Parameters
+            ----------
+            y_true: numpy.ndarray
+                True one-hot encoded labels.
+            y_pred: numpy.ndarray
+                Predicted probabilities (output of the model).
+
+            Returns
+            -------
+            float
+                The mean loss value over the batch.
+            """
+            # Avoid division by zero
+            y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
+
+            # Compute categorical cross-entropy loss
+            loss = -np.sum(y_true * np.log(y_pred_clipped), axis=1)
+            return np.mean(loss)
+
+        def derivative(self, y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+            """
+            Compute the derivative of the categorical cross-entropy loss function.
+
+            Parameters
+            ----------
+            y_true: numpy.ndarray
+                True one-hot encoded labels.
+            y_pred: numpy.ndarray
+                Predicted probabilities (output of the model).
+
+            Returns
+            -------
+            numpy.ndarray
+                The gradient of the loss function with respect to predictions.
+            """
+            # Avoid division by zero
+            y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
+
+            # Gradient calculation
+            gradients = -y_true / y_pred_clipped
+            return gradients / len(y_true)
+
+
+
